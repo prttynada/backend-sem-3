@@ -14,12 +14,12 @@ class Student {
         });
     }
 
-    static async create(datas) {
+    static async create(data) {
         // simpan id
         const id = await new Promise(function (resolve, reject) {
             // insert data ke db
             const sql = "INSERT INTO students SET ? ";
-            db.query(sql, datas, function(err, results) {
+            db.query(sql, data, function(err, results) {
                 // mengembalikan id
                 resolve(results.insertId);
             });
@@ -35,7 +35,9 @@ class Student {
         return new Promise ((resolve, reject) => {
             const sql = "SELECT * FROM students WHERE id = ?";
             db.query(sql, id, (err, results) => {
-                resolve(results[0]);
+                //destructing array
+                const [student] = results;
+                resolve(student);
             });
         });
     }

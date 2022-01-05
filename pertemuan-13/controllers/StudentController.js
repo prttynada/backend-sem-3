@@ -8,35 +8,47 @@ class StudentController {
     async index(req, res) {
         const students = await Student.all();
 
-        if (students) {
+        if (students.length > 0) {
             //tampilkan data
             const data = {
                 messege : "Menampilkan data student",
                 data: students,
             };
         
-            res.status(200).json(data);
+            return res.status(200).json(data);
         }
-        else {
-            //kirim data tidak ada
-            const data = {
-                messege : `Data tidak ada`,
-            };
-            
-            res.status(404).json(data);
-        }
+        // else
+        //kirim data kosong
+        const data = {
+            messege : `Data kosong`,
+        };
+        
+        return res.status(200).json(data);
     }
 
     async store(req, res) {
-        const datas = req.body;
-        const students = await Student.create(datas);
+        // validasi sederhana, handle jika salah satu data tidak ada
+
+        //destructing object req.body
+        const { nama, nim, email, jurusan } = req.body;
+
+        // jika data undefined maka kirim response error
+        if (!nama || !nim || !email || !jurusan) {
+            const data = {
+                messege : "Semua data harus dikirim",
+            };
+
+            return res.status(422).json(data);
+        }
+        //else
+        const students = await Student.create(req.body);
 
         const data = {
             messege : `Menambahkan data student baru`,
             data: students,
         };
         
-        res.status(201).json(data);
+        return res.status(201).json(data);
     }
 
     async update(req, res) {
@@ -56,16 +68,14 @@ class StudentController {
                 data: studentupdated,
             };
             
-            res.status(200).json(data);
-        } 
-        else {
-            //kirim data tidak ada
-            const data = {
-                messege : `Data tidak ada`,
-            };
-            
-            res.status(404).json(data);
-        }
+            return res.status(200).json(data);
+        } //else
+        //kirim data tidak ada
+        const data = {
+            messege : `Data tidak ada`,
+        };
+        
+        return res.status(404).json(data);
     }
 
     async destroy(req, res) {
@@ -85,16 +95,15 @@ class StudentController {
                 messege : `Menghapus data student`,
             };
             
-            res.status(200).json(data);
+            return res.status(200).json(data);
         } 
-        else {
-            //data tidak ada
-            const data = {
-                messege : `Data tidak ada`,
-            };
-            
-            res.status(404).json(data);
-        }
+        // else
+        //data tidak ada
+        const data = {
+            messege : `Data tidak ada`,
+        };
+        
+        return res.status(404).json(data);
     }
 
     async show(req, res) {
@@ -111,15 +120,14 @@ class StudentController {
                 data: student,
             };
             
-            res.status(200).json(data);
+            return res.status(200).json(data);
         }
-        else {
-            const data = {
-                messege : `Data tidak ada`,
-            };
-            
-            res.status(404).json(data);
-        }
+        // else
+        const data = {
+            messege : `Data tidak ada`,
+        };
+        
+        res.status(404).json(data);
     }
 }
 
